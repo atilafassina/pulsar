@@ -6,6 +6,13 @@ use std::path::Path;
 use core::future::Future;
 use core::pin::Pin;
 
+pub fn order_list(mut list: Vec<(String, u64)>) -> Vec<(String, u64)> {
+    list.sort_by(|path: &(String, u64), size| path.1.cmp(&size.1));
+    list.sort_by(|path, size| size.1.cmp(&path.1));
+
+    list
+}
+
 pub fn get_size<'a>(path: &'a Path) -> Pin<Box<dyn Future<Output = u64> + 'a>> {
     Box::pin(async move {
         // Using `fs::symlink_metadata` since we don't want to follow symlinks,

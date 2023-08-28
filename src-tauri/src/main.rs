@@ -23,7 +23,7 @@ async fn get_dir_data(pattern: &str) -> Result<Vec<(String, u64)>, Error> {
 
     tx.send(result).expect("File data did not reach receiver.");
 
-    Ok(rx.await?)
+    Ok(nmw::order_list(rx.await?))
 }
 
 fn main() {
