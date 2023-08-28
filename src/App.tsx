@@ -1,68 +1,93 @@
 import { For, createSignal } from "solid-js";
-import { invoke } from "@tauri-apps/api/tauri";
 import "./App.css";
+import { Header } from "./components/header";
+import { Scanner } from "./components/scanner";
 
-//  const all_documents = "../../../*/*/node_modules"
-const only_atila = "../../*/node_modules";
-const REGEX = "/(.*?)/node_modules";
+const all_documents = "../../../*/*/node_modules";
+// const only_atila = "../../*/node_modules";
+// const only_crab = "../../../crab/*/node_modules";
+// const REGEX = "/(.*?)/node_modules";
+// const REGEX = /\/([^/]+)\/node_modules$/;
+const REGEX = /^(.*\/)([^/]+)\/node_modules$/;
 
 function getDirName(path: string) {
   const match = path.match(REGEX);
-  return match ? match[1] : null;
+
+  if (match) {
+    return {
+      prefix: match[1],
+      dir: match[2],
+    };
+  } else {
+    return null;
+  }
+}
+
+function formatSizeUnit(bytes: number) {
+  const KILO = 1000;
+  const MEGA = KILO * 1000;
+  const GIGA = MEGA * 1000;
+  const TERA = GIGA * 1000;
+
+  if (bytes > TERA) {
+    return Math.trunc(bytes / GIGA) + "tb";
+  }
+
+  if (bytes > GIGA) {
+    return (bytes / GIGA).toFixed(2) + "gb";
+  }
+
+  if (bytes > MEGA) {
+    return Math.trunc(bytes / MEGA) + "mb";
+  }
+
+  if (bytes > KILO) {
+    return (bytes / KILO).toFixed(2) + "kb";
+  }
+
+  return Math.trunc(bytes) + "b";
 }
 
 function App() {
-  const [globPattern, setGlobPattern] = createSignal(only_atila);
-  const [folderList, setFolderList] = createSignal([[]]);
+  const [globPattern, setGlobPattern] = createSignal(all_documents);
+  const [folderList, setFolderList] = createSignal([
+    ["../../crab/crabnebula.dev/node_modules", 20949875732],
+  ]);
 
-  async function scan() {
-    let start = window.performance.now();
-    console.info(`starting scan: ${start}`);
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setFolderList(await invoke("get_dir_data", { pattern: globPattern() }));
-
-    let end = window.performance.now();
-    console.info(`scan ended at: ${end}.`);
-    console.warn(`elapsed: ${end - start}`);
-  }
   return (
-    <div class="container">
-      <h1>
-        Keep an eye on your <code>node_modules</code> or not
-      </h1>
-
-      <form
-        class="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          scan();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setGlobPattern(e.currentTarget.value)}
-          placeholder="Enter a glob..."
+    <main class="bg-neutral-800 grid min-h-screen text-white grid-rows-[auto,1fr,auto]">
+      <header class="pt-5 flex space-between items-center w-full">
+        <Header />
+        <Scanner
+          pattern={globPattern()}
+          setPattern={setGlobPattern}
+          setList={setFolderList}
         />
-        <button type="submit">scan</button>
-      </form>
+      </header>
+      <div>
+        <For each={folderList()}>
+          {([path, size]) => {
+            if (!Boolean(path)) {
+              return null;
+            }
+            const { prefix, dir } = getDirName(path);
+            const modulesSize = formatSizeUnit(size);
 
-      <For each={folderList()}>
-        {([path, size]) =>
-          Boolean(path) ? (
-            <div
-              style={{
-                display: "flex",
-                width: "100%",
-                "justify-content": "space-around",
-              }}
-            >
-              <strong>{getDirName(path)}</strong>
-              <span>{Number(size) / 1000000} mb</span>
-            </div>
-          ) : null
-        }
-      </For>
-    </div>
+            return (
+              <div class="flex w-100 justify-around">
+                <span>
+                  <span class="text-neutral-500">{prefix}</span>
+                  <strong>{dir}</strong>
+                  <span class="text-neutral-500">/node_modules</span>
+                </span>
+                <span>{modulesSize}</span>
+              </div>
+            );
+          }}
+        </For>
+      </div>
+      <footer>Built with rusty claws and Tauri</footer>
+    </main>
   );
 }
 
