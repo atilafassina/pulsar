@@ -5,10 +5,18 @@ use std::path::Path;
 
 use core::future::Future;
 use core::pin::Pin;
+use serde::Serialize;
+use specta::Type;
 
-pub fn order_list(mut list: Vec<(String, u64)>) -> Vec<(String, u64)> {
-    list.sort_by(|path: &(String, u64), size| path.1.cmp(&size.1));
-    list.sort_by(|path, size| size.1.cmp(&path.1));
+#[derive(Serialize, Type, Debug)]
+pub struct FolderStat {
+    pub path: String,
+    pub size: u32,
+}
+
+pub fn order_list(mut list: Vec<FolderStat>) -> Vec<FolderStat> {
+    list.sort_by(|a, b| a.path.cmp(&b.path));
+    list.sort_by(|a, b| a.size.cmp(&b.size));
 
     list
 }
