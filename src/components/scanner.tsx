@@ -1,20 +1,21 @@
-import { invoke } from "@tauri-apps/api/tauri";
+import { FolderStat, getDirData } from "../commands";
 
 type ScannerProps = {
   pattern: string;
   setPattern: (val: string) => void;
-  setList: (list: string[]) => void;
+  setList: (list: FolderStat[]) => void;
 };
 
 export function Scanner({ pattern, setPattern, setList }: ScannerProps) {
   async function scan() {
     let start = window.performance.now();
     console.info(`starting scan: ${start}`);
-    setList(await invoke("get_dir_data", { pattern }));
-
+    const list = await getDirData(pattern);
     let end = window.performance.now();
     console.info(`scan ended at: ${end}.`);
     console.warn(`elapsed: ${end - start}`);
+    console.log(list);
+    setList(list);
   }
   return (
     <form
@@ -25,6 +26,7 @@ export function Scanner({ pattern, setPattern, setList }: ScannerProps) {
       }}
     >
       <input
+        class="text-gray-800 px-1"
         onChange={(e) => setPattern(e.currentTarget.value)}
         placeholder="Enter a glob..."
       />

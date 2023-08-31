@@ -51,7 +51,7 @@ function formatSizeUnit(bytes: number) {
 function App() {
   const [globPattern, setGlobPattern] = createSignal(all_documents);
   const [folderList, setFolderList] = createSignal([
-    ["../../crab/crabnebula.dev/node_modules", 20949875732],
+    { path: "../../crab/crabnebula.dev/node_modules", size: 20949875732 },
   ]);
 
   return (
@@ -66,18 +66,21 @@ function App() {
       </header>
       <div>
         <For each={folderList()}>
-          {([path, size]) => {
+          {({ path, size }) => {
             if (!Boolean(path)) {
               return null;
             }
-            const { prefix, dir } = getDirName(path);
+            const dirName = getDirName(path);
+            if (dirName === null) {
+              return null;
+            }
             const modulesSize = formatSizeUnit(size);
 
             return (
               <div class="flex w-100 justify-around">
                 <span>
-                  <span class="text-neutral-500">{prefix}</span>
-                  <strong>{dir}</strong>
+                  <span class="text-neutral-500">{dirName.prefix}</span>
+                  <strong>{dirName.dir}</strong>
                   <span class="text-neutral-500">/node_modules</span>
                 </span>
                 <span>{modulesSize}</span>
