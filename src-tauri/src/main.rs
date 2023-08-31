@@ -5,21 +5,23 @@ mod error;
 
 use error::Error;
 use fs_extra::dir::{self};
+use nmw::FolderStat;
 use rayon::prelude::*;
 use tokio::sync::oneshot;
 
 #[tauri::command]
-async fn get_dir_data(pattern: &str) -> Result<Vec<(String, u64)>, Error> {
-    let (tx, rx) = oneshot::channel::<Vec<(String, u64)>>();
+async fn get_dir_data(pattern: &str) -> Result<Vec<FolderStat>, Error> {
+    let (tx, rx) = oneshot::channel::<Vec<FolderStat>>();
     let files = nmw::get_file_names(pattern);
+    let mut result = vec![];
 
-    let result = files
+    files
         .into_par_iter()
-        .map(|file_path: String| {
-            let size = dir::get_size(&file_path).expect("file size");
-            (file_path, size)
+        .map(|path: String| {
+            let size: u32 = dir::get_size(&path).expect("file size").try_into().unwrap();
+            FolderStat { path, size }
         })
-        .collect();
+        .collect_into_vec(&mut result);
 
     tx.send(result).expect("File data did not reach receiver.");
 
