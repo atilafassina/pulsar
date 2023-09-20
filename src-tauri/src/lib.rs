@@ -1,6 +1,8 @@
 mod error;
 
-use glob::{glob_with, MatchOptions};
+use globwalk::GlobWalkerBuilder;
+// use log::info;
+use regex::Regex;
 use std::path::Path;
 
 use core::future::Future;
@@ -16,7 +18,7 @@ pub struct FolderStat {
 
 pub fn order_list(mut list: Vec<FolderStat>) -> Vec<FolderStat> {
     list.sort_by(|a, b| a.path.cmp(&b.path));
-    list.sort_by(|a, b| a.size.cmp(&b.size));
+    list.sort_by(|a, b| b.size.cmp(&a.size));
 
     list
 }
@@ -51,14 +53,41 @@ pub fn get_size<'a>(path: &'a Path) -> Pin<Box<dyn Future<Output = u64> + 'a>> {
     })
 }
 
-pub fn get_file_names(path: &str) -> Vec<String> {
+pub fn get_dir_names(path: &str) -> Vec<String> {
     let mut filenames: Vec<String> = Vec::new();
 
-    for entry in glob_with(path, MatchOptions::default()).expect("glob has no files") {
-        if let Ok(path) = entry {
-            filenames.push(path.display().to_string());
+    let walker = GlobWalkerBuilder::from_patterns(path, &["**/node_modules", "**/![.pnpm]/*"])
+        .max_depth(6)
+        .follow_links(false)
+        .build()
+        .expect("glob walker should work")
+        .into_iter()
+        .filter_map(Result::ok);
+
+    for file in walker {
+        let path_string = file.path().display().to_string();
+        let node_modules_regex = Regex::new(r"node_modules").unwrap();
+
+        let mut count = 0;
+        let mut start = 0;
+        let mut should_scan = true;
+
+        while let Some(mat) = node_modules_regex.captures(&path_string[start..]) {
+            count += 1;
+            start += mat.get(0).unwrap().end();
+
+            if count > 1 {
+                should_scan = false;
+                break;
+            }
+        }
+
+        if should_scan {
+            filenames.push(path_string)
         }
     }
+
+    // info!("{}", filenames.len());
 
     filenames
 }
