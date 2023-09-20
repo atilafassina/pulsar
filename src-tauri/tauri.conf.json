@@ -17,6 +17,9 @@
         "all": false,
         "open": true
       },
+      "dialog": {
+        "all": true
+      },
       "fs": {
         "scope": ["$DOCUMENT/*"],
         "readDir": true,
