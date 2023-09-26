@@ -13,9 +13,9 @@ use std::path::Path;
 // use log::info;
 use error::Error;
 use futures::future::try_join_all;
-use util::FolderStat;
 use specta::collect_types;
 use tauri_specta::ts;
+use util::FolderStat;
 
 // use tauri_plugin_log::LogTarget;
 

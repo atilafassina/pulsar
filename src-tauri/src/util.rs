@@ -1,12 +1,12 @@
 use globwalk::GlobWalkerBuilder;
 // use log::info;
-use regex::Regex;
-use std::path::{Path, PathBuf};
+use crate::error::Error;
 use core::future::Future;
 use core::pin::Pin;
+use regex::Regex;
 use serde::Serialize;
 use specta::Type;
-use crate::error::Error;
+use std::path::{Path, PathBuf};
 
 #[derive(Serialize, Type, Debug)]
 pub struct FolderStat {
@@ -21,7 +21,9 @@ pub fn order_list(mut list: Vec<FolderStat>) -> Vec<FolderStat> {
     list
 }
 
-pub fn get_size<'a>(path: &'a Path) -> Pin<Box<dyn Future<Output = Result<u64, Error>> + 'a + Send>> {
+pub fn get_size<'a>(
+    path: &'a Path,
+) -> Pin<Box<dyn Future<Output = Result<u64, Error>> + 'a + Send>> {
     Box::pin(async move {
         // Using `fs::symlink_metadata` since we don't want to follow symlinks,
         // as we're calculating the exact size of the requested path itself.
