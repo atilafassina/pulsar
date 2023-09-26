@@ -25,7 +25,7 @@ async fn get_dir_data(pattern: &str) -> Result<Vec<FolderStat>, Error> {
     let dirs = util::get_dir_names(Path::new(pattern));
 
     let iter = dirs.into_iter().map(|path| async move {
-        let size = util::get_size(&path).await? as u32;
+        let size = u32::try_from(util::get_size(&path).await?)?;
         Ok(FolderStat { path, size }) as Result<FolderStat, Error>
     });
 
