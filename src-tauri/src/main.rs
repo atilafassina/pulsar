@@ -7,42 +7,31 @@
  * commenting out code before push.
  */
 mod error;
+mod util;
 
+use std::path::Path;
 // use log::info;
 use error::Error;
-use fs_extra::dir;
-use nmw::FolderStat;
-use rayon::prelude::*;
+use futures::future::try_join_all;
+use util::FolderStat;
 use specta::collect_types;
 use tauri_specta::ts;
-use tokio::sync::oneshot;
 
 // use tauri_plugin_log::LogTarget;
 
 #[tauri::command]
 #[specta::specta]
 async fn get_dir_data(pattern: &str) -> Result<Vec<FolderStat>, Error> {
-    let (tx, rx) = oneshot::channel::<Vec<FolderStat>>();
-    let dirs = nmw::get_dir_names(pattern);
-    let mut result = vec![];
+    let dirs = util::get_dir_names(Path::new(pattern));
 
-    // info!("get dir data starting");
+    let iter = dirs.into_iter().map(|path| async move {
+        let size = util::get_size(&path).await? as u32;
+        Ok(FolderStat { path, size }) as Result<FolderStat, Error>
+    });
 
-    dirs.into_par_iter()
-        .map(|path: String| {
-            let size: u32 = dir::get_size(&path)
-                .expect("file size")
-                .try_into()
-                .expect("not really sure");
-            FolderStat { path, size }
-        })
-        .collect_into_vec(&mut result);
+    let result = try_join_all(iter).await?;
 
-    tx.send(result).expect("File data did not reach receiver.");
-
-    // info!("finished measuring directories");
-
-    Ok(nmw::order_list(rx.await?))
+    Ok(util::order_list(result))
 }
 
 fn main() {
