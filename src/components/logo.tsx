@@ -1,4 +1,4 @@
-export function Header() {
+export function Logo() {
   return (
     <h1>
       <code class="text-6xl block">Pulsar</code>

@@ -11,12 +11,8 @@ type ScannerProps = {
 export function Scanner({ setList }: ScannerProps) {
   async function scan(scope: string) {
     const start = window.performance.now();
-    console.info(`starting scan: ${start}`);
-    console.info("scope", scope);
     const list = await getDirData(scope);
     const end = window.performance.now();
-    console.info(`scan ended at: ${end}.`);
-    console.warn(`elapsed: ${end - start}`);
     setScanTime(end - start);
     setList(list);
   }
@@ -35,8 +31,6 @@ export function Scanner({ setList }: ScannerProps) {
     }
 
     setRootScope(selected);
-    console.log(selected);
-    setGlob(`${selected}`);
   }
 
   const [rootScope, setRootScope] = createSignal<string | null>(null);
@@ -51,16 +45,15 @@ export function Scanner({ setList }: ScannerProps) {
       : scope;
   };
   const [scanTime, setScanTime] = createSignal(0);
-  const [glob, setGlob] = createSignal("");
 
   return (
     <>
       <form
-        class="flex flex-[1_1] flex-wrap justify-between h-12"
+        class="flex flex-[1_1] flex-wrap justify-between h-12 gap-4"
         onSubmit={(e) => {
           e.preventDefault();
-          console.info(`scanning: ${glob()}`);
-          scan(glob());
+          console.info(`scanning: ${rootScope()}`);
+          scan(rootScope()!);
         }}
       >
         <button

@@ -3,9 +3,6 @@
 @tailwind utilities;
 
 @layer base {
-  body {
-    @apply overflow-x-hidden;
-  }
   body::before {
     content: "";
     background-image: url("./assets/space.jpg");

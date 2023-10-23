@@ -21,10 +21,14 @@
         "all": true
       },
       "fs": {
-        "scope": ["$DOCUMENT/*"],
+        "scope": ["$DOCUMENT/**/*"],
         "readDir": true,
         "removeDir": false,
-        "readFile": true
+        "readFile": true,
+        "exists": true
+      },
+      "path": {
+        "all": true
       }
     },
     "bundle": {
