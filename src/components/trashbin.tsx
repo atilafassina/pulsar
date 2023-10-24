@@ -1,15 +1,4 @@
-import { mergeProps } from "solid-js";
-
-type SVGProps = {
-  class?: string;
-};
-export function Trashbin(props: SVGProps) {
-  const p = mergeProps(
-    {
-      class: "w-6 w-6",
-    },
-    props.class
-  );
+export function Trashbin() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -18,7 +7,7 @@ export function Trashbin(props: SVGProps) {
       aria-label="delete"
       stroke-width={1.5}
       stroke="currentColor"
-      class={p.class}
+      class="w-6 h-6 hover:scale-125 hover:text-fuchsia-500 transition-all"
     >
       <path
         stroke-linecap="round"

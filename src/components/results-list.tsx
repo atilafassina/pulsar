@@ -1,9 +1,10 @@
-import { Accessor, For, Show, createResource } from "solid-js";
+import { Accessor, For, Show, createResource, createSignal } from "solid-js";
+import { TransitionGroup } from "solid-transition-group";
 import { formatSizeUnit } from "../lib/format";
 import { getDirName } from "../lib/get-dir-name";
 import { Trashbin } from "./trashbin";
 import { exists, removeDir } from "@tauri-apps/api/fs";
-import { isAbsolute } from "@tauri-apps/api/path";
+import { confirm } from "@tauri-apps/api/dialog";
 
 type ResultsItem = {
   path: string;
@@ -14,16 +15,79 @@ type ListProps = {
   folderList: Accessor<ResultsItem[]>;
 };
 
-async function deleteNodeModules(path: string) {
-  // return createResource(async () => {
-  const absolute = await isAbsolute(path);
-  console.warn("the path is absolute::", absolute);
-  console.info("path is::", path);
-  const result = await exists(path);
+function deleteNodeModules(path: string) {
+  return async (_shouldDelete: boolean) => {
+    const fileExists = await exists(path);
 
-  console.log("file exists", result);
-  return result;
-  // });
+    if (fileExists) {
+      const shouldDelete = await confirm(
+        `${path} will be DELETED.
+      
+      Are you sure?
+      `,
+        {
+          okLabel: "DELETE",
+          title: "NON-REVERSIBLE ACTION",
+          type: "warning",
+        }
+      );
+
+      if (shouldDelete) {
+        await new Promise((r) => {
+          setTimeout(() => r("done")), 5000;
+        });
+
+        console.warn(":: deleting ::");
+        return true;
+      }
+    }
+
+    return false;
+  };
+}
+
+type TRprops = {
+  directory: string;
+  directoryPrefix: string;
+  modulesSize: string;
+};
+
+function TableRow(props: TRprops) {
+  const [shouldDelete, setDelete] = createSignal(false);
+
+  const [data, { mutate }] = createResource(
+    shouldDelete,
+    deleteNodeModules(props.directoryPrefix + props.directory)
+  );
+  return (
+    <Show when={!data()}>
+      <tr
+        class={`even:bg-black even:bg-opacity-60 transition-transform ease-in-out duration-300 hover:scale-x-105 group`}
+      >
+        <td class="text-left py-6">
+          <strong class="text-neutral-50 text-2xl block pl-6 group-hover:scale-110 group-hover:scale-x-105 transition-transform duration-300 ease-in-out">
+            {props.directory}
+          </strong>
+          <small class="text-neutral-300 pl-6">
+            {props.directoryPrefix}
+            {props.directory}/node_modules
+          </small>
+        </td>
+        <td class="py-6">{props.modulesSize}</td>
+        <td class="py-6">
+          <button
+            type="button"
+            onClick={() => {
+              mutate(true);
+              setDelete(true);
+            }}
+          >
+            <Trashbin />
+          </button>
+        </td>
+      </tr>
+    </Show>
+  );
 }
 
 export default function ResultsList(props: ListProps) {
@@ -41,43 +105,32 @@ export default function ResultsList(props: ListProps) {
             </tr>
           </thead>
           <tbody>
-            <For each={props.folderList()}>
-              {({ path, size }) => {
-                if (!Boolean(path)) {
-                  return null;
-                }
-                const dirName = getDirName(path);
-                if (dirName === null) {
-                  return null;
-                }
-                const modulesSize = formatSizeUnit(size);
+            <TransitionGroup
+              name="fade"
+              exitActiveClass="fade-exit-active"
+              exitToClass="fade-exit-to"
+            >
+              <For each={props.folderList()}>
+                {({ path, size }) => {
+                  if (!Boolean(path)) {
+                    return null;
+                  }
+                  const dirName = getDirName(path);
+                  if (dirName === null) {
+                    return null;
+                  }
+                  const modulesSize = formatSizeUnit(size);
 
-                return (
-                  <tr class="even:bg-black even:bg-opacity-60 transition-transform ease-in-out duration-300 hover:translate-x-2 group">
-                    <td class="text-left py-6">
-                      <strong class="text-neutral-50 text-2xl block pl-6 group-hover:scale-110 group-hover:translate-x-2 transition-transform duration-300 ease-in-out">
-                        {dirName.dir}
-                      </strong>
-                      <small class="text-neutral-300 pl-6">
-                        {dirName.prefix}
-                        {dirName.dir}/node_modules
-                      </small>
-                    </td>
-                    <td class="py-6">{modulesSize}</td>
-                    <td class="py-6">
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          await deleteNodeModules(dirName.prefix + dirName.dir);
-                        }}
-                      >
-                        <Trashbin />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              }}
-            </For>
+                  return (
+                    <TableRow
+                      modulesSize={modulesSize}
+                      directory={dirName.dir}
+                      directoryPrefix={dirName.prefix}
+                    />
+                  );
+                }}
+              </For>
+            </TransitionGroup>
           </tbody>
         </table>
       </Show>
