@@ -1,4 +1,4 @@
-import { Match, Show, Switch, createSignal } from "solid-js";
+import { Match, Show, Switch } from "solid-js";
 import { Logo } from "./components/logo";
 import { Scanner } from "./components/scanner";
 import Footer from "./components/footer";
