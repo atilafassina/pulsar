@@ -11,6 +11,12 @@ type ListProps = {
   folderList: FolderStat[];
 };
 
+type TRprops = {
+  directory: string;
+  directoryPrefix: string;
+  modulesSize: string;
+};
+
 function deleteNodeModules(path: string) {
   return async (_shouldDelete: boolean) => {
     const fileExists = await exists(path);
@@ -39,12 +45,6 @@ function deleteNodeModules(path: string) {
     return false;
   };
 }
-
-type TRprops = {
-  directory: string;
-  directoryPrefix: string;
-  modulesSize: string;
-};
 
 function TableRow(props: TRprops) {
   const [shouldDelete, setDelete] = createSignal(false);
