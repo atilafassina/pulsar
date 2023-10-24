@@ -7,18 +7,15 @@
     "withGlobalTauri": false
   },
   "package": {
-    "productName": "node-modules-watcher",
-    "version": "0.0.0"
+    "productName": "pulsar",
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
       "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
       "dialog": {
-        "all": true
+        "open": true,
+        "confirm": true
       },
       "fs": {
         "scope": ["$DOCUMENT/**/*"],
@@ -50,7 +47,7 @@
       {
         "fullscreen": false,
         "resizable": true,
-        "title": "node-modules-watcher",
+        "title": "pulsar",
         "width": 800,
         "height": 600
       }
