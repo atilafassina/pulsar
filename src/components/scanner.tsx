@@ -1,20 +1,20 @@
-import { Match, Show, Switch, createSignal } from "solid-js";
-import { FolderStat, getDirData } from "../commands";
+import { Match, Switch, createSignal } from "solid-js";
+import { getDirData } from "../commands";
 import { open } from "@tauri-apps/api/dialog";
+import { ScanStoreSetter } from "../lib/store";
 
 type ScannerProps = {
-  pattern: string;
-  setPattern: (val: string) => void;
-  setList: (list: FolderStat[]) => void;
+  setScanData: ScanStoreSetter;
 };
 
-export function Scanner({ setList }: ScannerProps) {
+export function Scanner(props: ScannerProps) {
   async function scan(scope: string) {
     const start = window.performance.now();
     const list = await getDirData(scope);
     const end = window.performance.now();
-    setScanTime(end - start);
-    setList(list);
+
+    props.setScanData("elapsed", end - start);
+    props.setScanData("fileList", list);
   }
 
   async function getRootScope() {
@@ -24,11 +24,13 @@ export function Scanner({ setList }: ScannerProps) {
       multiple: false,
     });
 
+    /**
+     * types will be fixed upstream in Tauri soon.
+     */
     if (Array.isArray(selected)) {
-      // can't have multiple
-      // type issue?
       return;
     }
+    console.info("selected", selected);
 
     setRootScope(selected);
   }
@@ -44,7 +46,6 @@ export function Scanner({ setList }: ScannerProps) {
       ? `...${scope.substring(scope.length - 10, scope.length)}`
       : scope;
   };
-  const [scanTime, setScanTime] = createSignal(0);
 
   return (
     <>
@@ -74,11 +75,6 @@ export function Scanner({ setList }: ScannerProps) {
         >
           scan
         </button>
-        <Show when={scanTime() > 0}>
-          <small class="block">
-            scanned in: {(scanTime() / 1000).toFixed(2)} seconds.
-          </small>
-        </Show>
       </form>
     </>
   );

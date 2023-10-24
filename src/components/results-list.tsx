@@ -1,18 +1,14 @@
-import { Accessor, For, Show, createResource, createSignal } from "solid-js";
+import { For, Show, createResource, createSignal } from "solid-js";
 import { TransitionGroup } from "solid-transition-group";
 import { formatSizeUnit } from "../lib/format";
 import { getDirName } from "../lib/get-dir-name";
 import { Trashbin } from "./trashbin";
 import { exists, removeDir } from "@tauri-apps/api/fs";
 import { confirm } from "@tauri-apps/api/dialog";
-
-type ResultsItem = {
-  path: string;
-  size: number;
-};
+import { type FolderStat } from "../commands";
 
 type ListProps = {
-  folderList: Accessor<ResultsItem[]>;
+  folderList: FolderStat[];
 };
 
 function deleteNodeModules(path: string) {
@@ -91,10 +87,10 @@ function TableRow(props: TRprops) {
 }
 
 export default function ResultsList(props: ListProps) {
-  const hasItems = () => props.folderList().length > 0;
+  const hasItems = () => props.folderList.length > 0;
 
   return (
-    <div class="w-full py-12">
+    <div class="w-full pt-6">
       <Show when={hasItems()} fallback="waiting for search...">
         <table class="w-full text-center">
           <thead class="sticky top-0 backdrop-blur-xl">
@@ -110,7 +106,7 @@ export default function ResultsList(props: ListProps) {
               exitActiveClass="fade-exit-active"
               exitToClass="fade-exit-to"
             >
-              <For each={props.folderList()}>
+              <For each={props.folderList}>
                 {({ path, size }) => {
                   if (!Boolean(path)) {
                     return null;
