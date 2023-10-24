@@ -23,7 +23,7 @@
       "fs": {
         "scope": ["$DOCUMENT/**/*"],
         "readDir": true,
-        "removeDir": false,
+        "removeDir": true,
         "readFile": true,
         "exists": true
       },

@@ -26,7 +26,7 @@ function App() {
           <div class="w-full pt-6">
             <Switch>
               <Match when={scanData.status === "scanning"}>
-                <p>searching...</p>
+                <p>scanning...</p>
               </Match>
               <Match when={hasItems()}>
                 <ResultsTable folderList={scanData.fileList} />

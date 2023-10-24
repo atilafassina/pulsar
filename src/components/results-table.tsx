@@ -22,18 +22,16 @@ function deleteNodeModules(path: string) {
       Are you sure?
       `,
         {
-          okLabel: "DELETE",
-          title: "NON-REVERSIBLE ACTION",
           type: "warning",
+          title: "NON-REVERSIBLE ACTION",
+          okLabel: "DELETE",
         }
       );
 
       if (shouldDelete) {
-        await new Promise((r) => {
-          setTimeout(() => r("done")), 5000;
-        });
-
         console.warn(":: deleting ::");
+        const rm = await removeDir(`${path}/node_modules`, { recursive: true });
+        console.log(rm);
         return true;
       }
     }

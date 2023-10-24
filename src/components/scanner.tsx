@@ -48,35 +48,33 @@ export function Scanner(props: ScannerProps) {
   };
 
   return (
-    <>
-      <form
-        class="flex flex-[1_1] flex-wrap justify-between h-12 gap-4"
-        onSubmit={(e) => {
-          e.preventDefault();
-          console.info(`scanning: ${rootScope()}`);
-          props.setScanData("status", "scanning");
-          scan(rootScope()!);
-        }}
+    <form
+      class="flex flex-[1_1] flex-wrap justify-end h-12 gap-4"
+      onSubmit={(e) => {
+        e.preventDefault();
+        console.info(`scanning: ${rootScope()}`);
+        props.setScanData("status", "scanning");
+        scan(rootScope()!);
+      }}
+    >
+      <button
+        type="button"
+        class="text-lg bg-neutral-400 text-neutral-300 bg-opacity-40 h-fit self-center py-2 px-4 rounded-md shadow-sm shadow-neutral-700"
+        onClick={getRootScope}
       >
-        <button
-          type="button"
-          class="text-lg bg-neutral-400 text-neutral-300 bg-opacity-40 h-fit self-center py-2 px-4 rounded-md shadow-sm shadow-neutral-700"
-          onClick={getRootScope}
-        >
-          <Switch fallback="Select scope">
-            <Match when={hasScope()}>
-              <small>{rootScopeDisplay()}</small>
-            </Match>
-          </Switch>
-        </button>
-        <button
-          type="submit"
-          disabled={!hasScope()}
-          class="ring-fuchsia-500 text-fuchsia-400 py-2 px-4 text-2xl rounded-full shadow-md shadow-fuchsia-600 ring-2 disabled:ring-neutral-800 disabled:text-neutral-400"
-        >
-          scan
-        </button>
-      </form>
-    </>
+        <Switch fallback="Select scope">
+          <Match when={hasScope()}>
+            <small>{rootScopeDisplay()}</small>
+          </Match>
+        </Switch>
+      </button>
+      <button
+        type="submit"
+        disabled={!hasScope()}
+        class="ring-fuchsia-500 text-fuchsia-400 py-2 px-4 text-2xl rounded-full shadow-md shadow-fuchsia-600 ring-2 disabled:ring-neutral-800 disabled:text-neutral-400"
+      >
+        scan
+      </button>
+    </form>
   );
 }
