@@ -15,6 +15,7 @@ export function Scanner(props: ScannerProps) {
 
     props.setScanData("elapsed", end - start);
     props.setScanData("fileList", list);
+    props.setScanData("status", "idle");
   }
 
   async function getRootScope() {
@@ -30,7 +31,6 @@ export function Scanner(props: ScannerProps) {
     if (Array.isArray(selected)) {
       return;
     }
-    console.info("selected", selected);
 
     setRootScope(selected);
   }
@@ -54,6 +54,7 @@ export function Scanner(props: ScannerProps) {
         onSubmit={(e) => {
           e.preventDefault();
           console.info(`scanning: ${rootScope()}`);
+          props.setScanData("status", "scanning");
           scan(rootScope()!);
         }}
       >

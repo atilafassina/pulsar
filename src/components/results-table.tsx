@@ -86,50 +86,44 @@ function TableRow(props: TRprops) {
   );
 }
 
-export default function ResultsList(props: ListProps) {
-  const hasItems = () => props.folderList.length > 0;
-
+export default function ResultsTable(props: ListProps) {
   return (
-    <div class="w-full pt-6">
-      <Show when={hasItems()} fallback="waiting for search...">
-        <table class="w-full text-center">
-          <thead class="sticky top-0 backdrop-blur-xl">
-            <tr class="text-2xl font-mono">
-              <th class="w-3/5 text-left pl-6 py-3 ">Name</th>
-              <th class="w-1/5 py-3 ">Size</th>
-              <th class="w-1/5 py-3 ">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <TransitionGroup
-              name="fade"
-              exitActiveClass="fade-exit-active"
-              exitToClass="fade-exit-to"
-            >
-              <For each={props.folderList}>
-                {({ path, size }) => {
-                  if (!Boolean(path)) {
-                    return null;
-                  }
-                  const dirName = getDirName(path);
-                  if (dirName === null) {
-                    return null;
-                  }
-                  const modulesSize = formatSizeUnit(size);
+    <table class="w-full text-center">
+      <thead class="sticky top-0 backdrop-blur-xl">
+        <tr class="text-2xl font-mono">
+          <th class="w-3/5 text-left pl-6 py-3 ">Name</th>
+          <th class="w-1/5 py-3 ">Size</th>
+          <th class="w-1/5 py-3 ">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <TransitionGroup
+          name="fade"
+          exitActiveClass="fade-exit-active"
+          exitToClass="fade-exit-to"
+        >
+          <For each={props.folderList}>
+            {({ path, size }) => {
+              if (!Boolean(path)) {
+                return null;
+              }
+              const dirName = getDirName(path);
+              if (dirName === null) {
+                return null;
+              }
+              const modulesSize = formatSizeUnit(size);
 
-                  return (
-                    <TableRow
-                      modulesSize={modulesSize}
-                      directory={dirName.dir}
-                      directoryPrefix={dirName.prefix}
-                    />
-                  );
-                }}
-              </For>
-            </TransitionGroup>
-          </tbody>
-        </table>
-      </Show>
-    </div>
+              return (
+                <TableRow
+                  modulesSize={modulesSize}
+                  directory={dirName.dir}
+                  directoryPrefix={dirName.prefix}
+                />
+              );
+            }}
+          </For>
+        </TransitionGroup>
+      </tbody>
+    </table>
   );
 }

@@ -5,6 +5,7 @@ import { type FolderStat } from "../commands";
 type Data = {
   fileList: FolderStat[];
   elapsed: number;
+  status: "idle" | "scanning";
 
   // computed
   stats: string;
@@ -13,6 +14,7 @@ type Data = {
 export const initialStore: Data = {
   fileList: [],
   elapsed: 0,
+  status: "idle",
 
   get stats() {
     const timespan = (this.elapsed / 1000).toFixed(2);

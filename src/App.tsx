@@ -1,13 +1,14 @@
-import { Show, createSignal } from "solid-js";
+import { Match, Show, Switch, createSignal } from "solid-js";
 import { Logo } from "./components/logo";
 import { Scanner } from "./components/scanner";
 import Footer from "./components/footer";
-import ResultsList from "./components/results-list";
+import ResultsTable from "./components/results-table";
 import "./App.css";
 import { scanStore } from "./lib/store";
 
 function App() {
   const [scanData, setScanData] = scanStore;
+  const hasItems = () => scanData.fileList.length > 0;
 
   return (
     <>
@@ -22,7 +23,19 @@ function App() {
               {scanData.stats}
             </strong>
           </Show>
-          <ResultsList folderList={scanData.fileList} />
+          <div class="w-full pt-6">
+            <Switch>
+              <Match when={scanData.status === "scanning"}>
+                <p>searching...</p>
+              </Match>
+              <Match when={hasItems()}>
+                <ResultsTable folderList={scanData.fileList} />
+              </Match>
+              <Match when={scanData.status === "idle" && !hasItems()}>
+                <p>waiting on search</p>
+              </Match>
+            </Switch>
+          </div>
         </article>
         <Footer />
       </main>
