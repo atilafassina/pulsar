@@ -9,13 +9,15 @@
 mod error;
 mod util;
 
-use std::path::Path;
-// use log::info;
 use error::Error;
 use futures::future::try_join_all;
-use specta::collect_types;
-use tauri_specta::ts;
+use std::path::Path;
 use util::FolderStat;
+
+#[cfg(debug_assertions)]
+use specta::collect_types;
+#[cfg(debug_assertions)]
+use tauri_specta::ts;
 
 // use tauri_plugin_log::LogTarget;
 
