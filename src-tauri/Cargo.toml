@@ -21,7 +21,7 @@ specta = "1.0.5"
 tauri-specta = { version = "1.0.2", features = ["typescript"] }
 regex = "1.9.5"
 tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
-log = "0.4.20"
+log = { version = "0.4.20", features = ["release_max_level_off"] }
 globwalk = "0.8.1"
 futures = "0.3.28"
 
