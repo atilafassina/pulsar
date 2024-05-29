@@ -1,8 +1,8 @@
-use globwalk::GlobWalkerBuilder;
-// use log::info;
 use crate::error::Error;
 use core::future::Future;
 use core::pin::Pin;
+use globwalk::GlobWalkerBuilder;
+use log::info;
 use regex::Regex;
 use serde::Serialize;
 use specta::Type;
@@ -87,7 +87,7 @@ pub fn get_dir_names(path: &Path) -> Vec<PathBuf> {
         }
     }
 
-    // info!("{}", filenames.len());
+    info!("Dir names: {}", filenames.len());
 
     filenames
 }

@@ -1,11 +1,6 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-/**
- * @TODO
- * figure out how to only show logs in dev without
- * commenting out code before push.
- */
 mod error;
 mod util;
 
@@ -19,7 +14,7 @@ use specta::collect_types;
 #[cfg(debug_assertions)]
 use tauri_specta::ts;
 
-// use tauri_plugin_log::LogTarget;
+use tauri_plugin_log::LogTarget;
 
 #[tauri::command]
 #[specta::specta]
@@ -41,11 +36,11 @@ fn main() {
     ts::export(collect_types![get_dir_data], "../src/commands.ts").unwrap();
 
     tauri::Builder::default()
-        // .plugin(
-        //     tauri_plugin_log::Builder::default()
-        //         .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
-        //         .build(),
-        // )
+        .plugin(
+            tauri_plugin_log::Builder::default()
+                .targets([LogTarget::LogDir, LogTarget::Stdout, LogTarget::Webview])
+                .build(),
+        )
         .invoke_handler(tauri::generate_handler![get_dir_data])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
