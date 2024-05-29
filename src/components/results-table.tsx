@@ -3,9 +3,10 @@ import { TransitionGroup } from "solid-transition-group";
 import { formatSizeUnit } from "../lib/format";
 import { getDirName } from "../lib/get-dir-name";
 import { Trashbin } from "./trashbin";
-import { exists, removeDir } from "@tauri-apps/api/fs";
-import { confirm } from "@tauri-apps/api/dialog";
+import { exists, remove } from "@tauri-apps/plugin-fs";
+import { confirm } from "@tauri-apps/plugin-dialog";
 import { type FolderStat } from "../commands";
+import { Checkbox } from "@kobalte/core";
 
 type ListProps = {
   folderList: FolderStat[];
@@ -28,7 +29,7 @@ function deleteNodeModules(path: string) {
       Are you sure?
       `,
         {
-          type: "warning",
+          kind: "warning",
           title: "NON-REVERSIBLE ACTION",
           okLabel: "DELETE",
         }
@@ -36,7 +37,7 @@ function deleteNodeModules(path: string) {
 
       if (shouldDelete) {
         console.warn(":: deleting ::");
-        const rm = await removeDir(`${path}/node_modules`, { recursive: true });
+        const rm = await remove(`${path}/node_modules`, { recursive: true });
         console.log(rm);
         return true;
       }
@@ -69,15 +70,27 @@ function TableRow(props: TRprops) {
         </td>
         <td class="py-6">{props.modulesSize}</td>
         <td class="py-6">
-          <button
-            type="button"
-            onClick={() => {
-              mutate(true);
-              setDelete(true);
-            }}
-          >
-            <Trashbin />
-          </button>
+          <ul class="flex space-around items-center gap-4">
+            <li>
+              <Checkbox.Root class="checkbox grid">
+                <Checkbox.Input class="hidden" onChange={() => {}} />
+                <Checkbox.Control class="h-5 w-5 rounded-md border border-solid border-gray-300 bg-gray-200 grid place-items-center">
+                  <Checkbox.Indicator class="w-full h-full block bg-slate-500 rounded-lg" />
+                </Checkbox.Control>
+              </Checkbox.Root>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={() => {
+                  mutate(true);
+                  setDelete(true);
+                }}
+              >
+                <Trashbin />
+              </button>
+            </li>
+          </ul>
         </td>
       </tr>
     </Show>
@@ -85,6 +98,8 @@ function TableRow(props: TRprops) {
 }
 
 export default function ResultsTable(props: ListProps) {
+  const [selected, setSelected] = createSignal([]);
+
   return (
     <table class="w-full text-center">
       <thead class="sticky top-0 backdrop-blur-xl">

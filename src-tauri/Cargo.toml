@@ -1,5 +1,5 @@
 [package]
-name = "nmw"
+name = "pulsar"
 version = "0.0.0"
 description = "A Tauri App"
 authors = ["@AtilaFassina"]
@@ -7,25 +7,40 @@ license = ""
 repository = ""
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "pulsar_lib"
+# crate-type = ["staticlib", "cdylib", "rlib", "lib"]
+crate-type = ["staticlib", "cdylib", "rlib"]
+
 
 [build-dependencies]
-tauri-build = { version = "1.4", features = [] }
+tauri-build = { version = "2.0.0-beta", features = [] }
 
 [dependencies]
-tauri = { version = "1.4", features = [ "dialog-open", "dialog-confirm", "fs-remove-dir", "path-all", "fs-exists", "fs-read-file", "fs-read-dir"] }
-serde = { version = "1.0", features = ["derive"] }
+# tauri = { version = "2.0.0-beta", features = [ "fs-remove-dir", "fs-exists", "path-all", "fs-read-dir", "dialog-confirm", "fs-read-file", "dialog-open"] }
+tauri = { version = "=2.0.0-beta.22", features = [] }
+tauri-plugin-shell = "2.0.0-beta.7"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# tauri-plugin-devtools = { git = "https://github.com/crabnebula-dev/devtools", version = "2.0.0-beta.0" }
+tauri-plugin-fs = "2.0.0-beta.6"
+tauri-plugin-dialog = "2.0.0-beta.5"
 tokio = { version = "1.32.0", features = ["fs"] }
 thiserror = "1.0.47"
-specta = "1.0.5"
-tauri-specta = { version = "1.0.2", features = ["typescript"] }
 regex = "1.9.5"
-tauri-plugin-log = { git = "https://github.com/tauri-apps/plugins-workspace", branch = "v1" }
 log = { version = "0.4.20", features = ["release_max_level_off"] }
 globwalk = "0.8.1"
 futures = "0.3.28"
+tauri-plugin-devtools = "2.0.0-beta.3"
+# specta = "=2.0.0-rc.12"
+# tauri-specta = { version = "=2.0.0-rc.5", features = ["javascript", "typescript"] }
 
-[features]
-# this feature is used for production builds or when `devPath` points to the filesystem
-# DO NOT REMOVE!!
-custom-protocol = ["tauri/custom-protocol"]
+# Optimize for smaller binary size
+[profile.release]
+panic = "abort" # Strip expensive panic clean-up logic
+codegen-units = 1 # Compile crates one after another so the compiler can optimize better
+lto = true # Enables link to optimizations
+opt-level = "s" # Optimize for binary size
+strip = true # Remove debug symbols
+
+

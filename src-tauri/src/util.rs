@@ -5,10 +5,11 @@ use globwalk::GlobWalkerBuilder;
 use log::info;
 use regex::Regex;
 use serde::Serialize;
-use specta::Type;
+// use specta::Type;
 use std::path::{Path, PathBuf};
 
-#[derive(Serialize, Type, Debug)]
+// #[derive(Serialize, Type, Debug)]
+#[derive(Serialize, Debug)]
 pub struct FolderStat {
     pub path: PathBuf,
     pub size: u32,

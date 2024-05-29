@@ -1,6 +1,6 @@
 import { Match, Switch, createSignal } from "solid-js";
 import { getDirData } from "../commands";
-import { open } from "@tauri-apps/api/dialog";
+import { open } from "@tauri-apps/plugin-dialog";
 import { ScanStoreSetter } from "../lib/store";
 
 type ScannerProps = {
@@ -14,7 +14,7 @@ export function Scanner(props: ScannerProps) {
     const end = window.performance.now();
 
     props.setScanData("elapsed", end - start);
-    props.setScanData("fileList", list);
+    props.setScanData("fileList", list as any);
     props.setScanData("status", "idle");
   }
 
