@@ -3,14 +3,14 @@ mod util;
 
 use error::Error;
 use futures::future::try_join_all;
-// use specta::collect_types;
+use specta::collect_types;
 use std::path::Path;
 use tauri_plugin_devtools;
-// use tauri_specta::ts;
+use tauri_specta::ts;
 use util::FolderStat;
 
-// #[specta::specta]
 #[tauri::command]
+#[specta::specta]
 async fn get_dir_data(pattern: &str) -> Result<Vec<FolderStat>, Error> {
     let dirs = util::get_dir_names(Path::new(pattern));
 
@@ -32,7 +32,14 @@ pub fn run() {
     #[cfg(debug_assertions)]
     {
         let devtools = tauri_plugin_devtools::init();
-        // ts::export(collect_types![get_dir_data], "../src/commands.ts").unwrap();
+        //
+        // tauri_specta::(collect_commands![get_dir_data], "../src/commands.ts").unwrap();
+
+        let mut types_builder =
+            tauri_specta::ts::builder().commands(tauri_specta::collect_commands![get_dir_data]);
+
+        types_builder = types_builder.path("../src/commands.ts");
+        types_builder.build().unwrap();
 
         builder = builder.plugin(devtools);
     }

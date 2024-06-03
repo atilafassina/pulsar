@@ -9,7 +9,6 @@ edition = "2021"
 
 [lib]
 name = "pulsar_lib"
-# crate-type = ["staticlib", "cdylib", "rlib", "lib"]
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 
@@ -17,12 +16,10 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 tauri-build = { version = "2.0.0-beta", features = [] }
 
 [dependencies]
-# tauri = { version = "2.0.0-beta", features = [ "fs-remove-dir", "fs-exists", "path-all", "fs-read-dir", "dialog-confirm", "fs-read-file", "dialog-open"] }
 tauri = { version = "=2.0.0-beta.22", features = [] }
 tauri-plugin-shell = "2.0.0-beta.7"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-# tauri-plugin-devtools = { git = "https://github.com/crabnebula-dev/devtools", version = "2.0.0-beta.0" }
 tauri-plugin-fs = "2.0.0-beta.6"
 tauri-plugin-dialog = "2.0.0-beta.5"
 tokio = { version = "1.32.0", features = ["fs"] }
@@ -32,8 +29,8 @@ log = { version = "0.4.20", features = ["release_max_level_off"] }
 globwalk = "0.8.1"
 futures = "0.3.28"
 tauri-plugin-devtools = "2.0.0-beta.3"
-# specta = "=2.0.0-rc.12"
-# tauri-specta = { version = "=2.0.0-rc.5", features = ["javascript", "typescript"] }
+specta = "=2.0.0-rc.12"
+tauri-specta = { version = "=2.0.0-rc.11", features = ["javascript", "typescript"] }
 
 # Optimize for smaller binary size
 [profile.release]
