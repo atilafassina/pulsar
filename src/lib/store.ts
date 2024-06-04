@@ -18,7 +18,7 @@ export const initialStore: Data = {
 
   get stats() {
     const timespan = (this.elapsed / 1000).toFixed(2);
-    return `scanned ${this.fileList.length} directories in ${timespan} seconds.`;
+    return `scanned ${this.fileList.length} projects in ${timespan} seconds.`;
   },
 };
 const ScanContext = createContext<{

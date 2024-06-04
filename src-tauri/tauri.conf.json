@@ -1,45 +1,27 @@
 {
+  "productName": "pulsar",
+  "version": "0.1.0",
+  "identifier": "com.tauri.dev",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": false
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
   },
-  "package": {
-    "productName": "pulsar",
-    "version": "0.1.0"
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
   },
-  "tauri": {
-    "allowlist": {
-      "all": false,
-      "dialog": {
-        "open": true,
-        "confirm": true
-      },
-      "fs": {
-        "scope": ["$DOCUMENT/**/*"],
-        "readDir": true,
-        "removeDir": true,
-        "readFile": true,
-        "exists": true
-      },
-      "path": {
-        "all": true
-      }
-    },
-    "bundle": {
-      "active": true,
-      "targets": "all",
-      "identifier": "pulsar.atila.io",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    },
+  "plugins": {},
+  "app": {
+    "withGlobalTauri": false,
     "security": {
       "csp": null
     },
