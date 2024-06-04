@@ -27,12 +27,12 @@ async fn get_dir_data(pattern: &str) -> Result<Vec<FolderStat>, Error> {
 
 pub fn run() {
     #[cfg(debug_assertions)]
-    let builder = tauri::Builder::default()
+    let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init());
 
     #[cfg(not(debug_assertions))]
-    let mut builder = tauri::Builder::default()
+    let builder = tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init());
 
@@ -41,7 +41,7 @@ pub fn run() {
             tauri_specta::ts::builder().commands(tauri_specta::collect_commands![get_dir_data]);
 
         #[cfg(debug_assertions)]
-        let tauri_specta_builder = builder.path("../src/commands.ts");
+        let tauri_specta_builder = tauri_specta_builder.path("../src/commands.ts");
 
         tauri_specta_builder.build().unwrap()
     };
