@@ -1,7 +1,7 @@
 {
   "productName": "pulsar",
   "version": "0.1.0",
-  "identifier": "com.tauri.dev",
+  "identifier": "pulsar.atila.io",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",

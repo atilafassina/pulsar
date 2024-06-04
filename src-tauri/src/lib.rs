@@ -5,8 +5,10 @@ use error::Error;
 use futures::future::try_join_all;
 use specta;
 use std::path::Path;
-use tauri_plugin_devtools;
 use util::FolderStat;
+
+#[cfg(debug_assertions)]
+use tauri_plugin_devtools;
 
 #[tauri::command]
 #[specta::specta]
@@ -24,18 +26,24 @@ async fn get_dir_data(pattern: &str) -> Result<Vec<FolderStat>, Error> {
 }
 
 pub fn run() {
+    #[cfg(debug_assertions)]
+    let builder = tauri::Builder::default()
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init());
+
+    #[cfg(not(debug_assertions))]
     let mut builder = tauri::Builder::default()
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_dialog::init());
 
     let invoke_handler = {
-        let builder =
+        let tauri_specta_builder =
             tauri_specta::ts::builder().commands(tauri_specta::collect_commands![get_dir_data]);
 
         #[cfg(debug_assertions)]
-        let builder = builder.path("../src/commands.ts");
+        let tauri_specta_builder = builder.path("../src/commands.ts");
 
-        builder.build().unwrap()
+        tauri_specta_builder.build().unwrap()
     };
 
     #[cfg(debug_assertions)]
