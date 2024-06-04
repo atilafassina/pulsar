@@ -1,14 +1,28 @@
 use crate::FolderStat;
 use serde::{Serialize, Serializer};
+use specta::Type;
 
-#[derive(Debug, thiserror::Error)]
+#[derive(Debug, Type, thiserror::Error)]
+#[serde(tag = "type", content = "data")]
 pub enum Error {
+    #[serde(skip)]
     #[error("Tokio can't readdir")]
-    Io(#[from] std::io::Error),
+    IoError(
+        #[serde(skip)] // io::Error is not `Serialize` or `Type`
+        #[from]
+        std::io::Error,
+    ),
+
     #[error("Failed to forward folder statistics, internal channel is broken.")]
+    #[serde(skip)]
     TrySendError(#[from] tokio::sync::mpsc::error::TrySendError<FolderStat>),
+
     #[error("Node modules folder size too large to be represented in JavaScript.")]
-    TooLarge(#[from] std::num::TryFromIntError),
+    TooLarge(
+        #[serde(skip)] // io::Error is not `Serialize` or `Type`
+        #[from]
+        std::num::TryFromIntError,
+    ),
 }
 
 impl Serialize for Error {
