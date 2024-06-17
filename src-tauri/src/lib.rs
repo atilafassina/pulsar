@@ -9,6 +9,7 @@ use util::FolderStat;
 
 #[cfg(debug_assertions)]
 use tauri_plugin_devtools;
+use tauri_plugin_dialog;
 
 #[tauri::command]
 #[specta::specta]
@@ -53,6 +54,8 @@ pub fn run() {
     }
 
     builder
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_dialog::init())
         .invoke_handler(invoke_handler)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -13,6 +13,7 @@
     "resources:default",
     "menu:default",
     "tray:default",
+    "fs:default",
     "fs:allow-read-file",
     "fs:allow-read-dir",
     "fs:allow-remove",
@@ -26,6 +27,12 @@
     "dialog:allow-open",
     "dialog:allow-confirm",
     "dialog:default",
-    "fs:default"
+    "dialog:default",
+    "dialog:allow-ask",
+    "dialog:allow-message",
+    "updater:default",
+    "updater:allow-check",
+    "updater:allow-download-and-install"
+
   ]
 }

@@ -23,6 +23,9 @@ importers:
       '@tauri-apps/plugin-shell':
         specifier: '>=2.0.0-beta.0'
         version: 2.0.0-beta.4
+      '@tauri-apps/plugin-updater':
+        specifier: 2.0.0-beta.5
+        version: 2.0.0-beta.5
       autoprefixer:
         specifier: ^10.4.16
         version: 10.4.19(postcss@8.4.38)
@@ -518,6 +521,9 @@ packages:
 
   '@tauri-apps/plugin-shell@2.0.0-beta.4':
     resolution: {integrity: sha512-y9APB3ZLtkY4IM6syE+dn/R4XR2UTHBcAI/n9L5PgnvOjJAuuEzVYURn10G51nKnLw+sFbxO7LW4VW66Uoaa9g==}
+
+  '@tauri-apps/plugin-updater@2.0.0-beta.5':
+    resolution: {integrity: sha512-h8uNFQDtXaZPFyQcNAB5SxiSIvPbYRlM1fXf/lCcW8bAaMTanyszbHvR2vAYtVa/wIzKAOYriC/MpsJaKLjyhg==}
 
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
@@ -1645,6 +1651,10 @@ snapshots:
   '@tauri-apps/plugin-shell@2.0.0-beta.4':
     dependencies:
       '@tauri-apps/api': 2.0.0-beta.11
+
+  '@tauri-apps/plugin-updater@2.0.0-beta.5':
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.13
 
   '@types/babel__core@7.20.5':
     dependencies:

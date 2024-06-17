@@ -1,14 +1,19 @@
-import { Match, Show, Switch } from "solid-js";
+import { Match, Show, Switch, onMount } from "solid-js";
 import { Logo } from "./components/logo";
 import { Scanner } from "./components/scanner";
 import Footer from "./components/footer";
 import ResultsTable from "./components/results-table";
 import "./App.css";
 import { scanStore } from "./lib/store";
+import { checkForAppUpdates } from "./lib/updater";
 
 function App() {
   const [scanData, setScanData] = scanStore;
   const hasItems = () => scanData.fileList.length > 0;
+
+  onMount(async () => {
+    await checkForAppUpdates(false);
+  });
 
   return (
     <>

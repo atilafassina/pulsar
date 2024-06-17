@@ -1,6 +1,6 @@
 [package]
 name = "pulsar"
-version = "0.0.0"
+version = "0.1.2"
 description = "A Tauri App"
 authors = ["@AtilaFassina"]
 license = ""
@@ -31,6 +31,7 @@ futures = "0.3.28"
 tauri-plugin-devtools = "2.0.0-beta.3"
 specta = "=2.0.0-rc.12"
 tauri-specta = { version = "=2.0.0-rc.11", features = ["javascript", "typescript"] }
+tauri-plugin-updater = "2.0.0-beta.8"
 
 # Optimize for smaller binary size
 [profile.release]
