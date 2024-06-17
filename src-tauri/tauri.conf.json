@@ -9,6 +9,7 @@
     "devUrl": "http://localhost:1420",
     "frontendDist": "../dist"
   },
+  
   "bundle": {
     "macOS": {
       "signingIdentity": "-"
@@ -23,7 +24,16 @@
       "icons/icon.ico"
     ]
   },
-  "plugins": {},
+  "plugins": {
+    "updater": {
+      "active": true,
+      "endpoints": [
+        "https://cdn.crabnebula.app/update/the-huns/pulsar/{{target}}-{{arch}}/{{current_version}}"
+      ],
+      "dialog": true,
+      "pubkey": ""
+    }
+  },
   "app": {
     "withGlobalTauri": false,
     "security": {
