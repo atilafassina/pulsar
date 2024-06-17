@@ -31,7 +31,7 @@
         "https://cdn.crabnebula.app/update/the-huns/pulsar/{{target}}-{{arch}}/{{current_version}}"
       ],
       "dialog": true,
-      "pubkey": ""
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDIwRjVBQUI5NkIyRUExMjkKUldRcG9TNXJ1YXIxSUdLcmJLSTZVUkwvbE5CWGZMbUt0Q2NRTkhsMmEzV3E2a0tzbTYySFJ3NXAK"
     }
   },
   "app": {
