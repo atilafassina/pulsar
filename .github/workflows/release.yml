@@ -65,8 +65,12 @@ jobs:
 
       - name: build tauri app
         run: |
-          npm install
-          npm run tauri build
+          pnpm install
+          pnpm run tauri build
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
 
       - name: upload assets
         uses: crabnebula-dev/cloud-release@v0.1.0
