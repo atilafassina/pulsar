@@ -4,20 +4,8 @@ import { invoke } from "@tauri-apps/api/core";
 
 export async function checkForAppUpdates(onUserClick: false) {
   const update = await check();
-  if (update === null) {
-    await message(
-      `
-Failed to check for updates.
-Please try again later.
-`,
-      {
-        title: "Error",
-        kind: "error",
-        okLabel: "OK",
-      }
-    );
-    return;
-  } else if (update?.available) {
+
+  if (update?.available) {
     const yes = await ask(
       `
 Update to ${update.version} is available!
@@ -38,6 +26,7 @@ Release notes: ${update.body}
       // As an alternative, you could ask the user to restart the app manually
       await invoke("graceful_restart");
     }
+    // Support for manual updates.
   } else if (onUserClick) {
     await message("You are on the latest version.", {
       title: "No Update Found",
