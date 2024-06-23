@@ -1,6 +1,6 @@
 import { check } from "@tauri-apps/plugin-updater";
 import { ask, message } from "@tauri-apps/plugin-dialog";
-import { invoke } from "@tauri-apps/api/core";
+import { relaunch } from "@tauri-apps/plugin-process";
 
 export async function checkForAppUpdates(onUserClick: false) {
   const update = await check();
@@ -24,7 +24,7 @@ Release notes: ${update.body}
       // Restart the app after the update is installed by calling the Tauri command that handles restart for your app
       // It is good practice to shut down any background processes gracefully before restarting
       // As an alternative, you could ask the user to restart the app manually
-      await invoke("graceful_restart");
+      await relaunch();
     }
     // Support for manual updates.
   } else if (onUserClick) {

@@ -20,6 +20,9 @@ importers:
       '@tauri-apps/plugin-fs':
         specifier: 2.0.0-beta.5
         version: 2.0.0-beta.5
+      '@tauri-apps/plugin-process':
+        specifier: 2.0.0-beta.5
+        version: 2.0.0-beta.5
       '@tauri-apps/plugin-shell':
         specifier: '>=2.0.0-beta.0'
         version: 2.0.0-beta.4
@@ -518,6 +521,9 @@ packages:
 
   '@tauri-apps/plugin-fs@2.0.0-beta.5':
     resolution: {integrity: sha512-uTqCDFA1z8KDtTe5fKlbRrKV4zxh63UVUvD/PR8GnyNLV+qxj/fEuJuGvMdfMbVKrTljGqSpun5wnP5jqD5fMg==}
+
+  '@tauri-apps/plugin-process@2.0.0-beta.5':
+    resolution: {integrity: sha512-UMiBm6TtNYfxRb6GwzA4PalkZGwalHdclI/t0MVG33fNXgX1PaWONR/NZW/k7JE+WpvRAnN/Kf9ur8aEzjVVSQ==}
 
   '@tauri-apps/plugin-shell@2.0.0-beta.4':
     resolution: {integrity: sha512-y9APB3ZLtkY4IM6syE+dn/R4XR2UTHBcAI/n9L5PgnvOjJAuuEzVYURn10G51nKnLw+sFbxO7LW4VW66Uoaa9g==}
@@ -1645,6 +1651,10 @@ snapshots:
       '@tauri-apps/api': 2.0.0-beta.13
 
   '@tauri-apps/plugin-fs@2.0.0-beta.5':
+    dependencies:
+      '@tauri-apps/api': 2.0.0-beta.13
+
+  '@tauri-apps/plugin-process@2.0.0-beta.5':
     dependencies:
       '@tauri-apps/api': 2.0.0-beta.13
 
