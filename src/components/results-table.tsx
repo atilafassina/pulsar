@@ -23,37 +23,38 @@ function deleteNodeModules(path: string) {
     const fileExists = await exists(path);
 
     if (fileExists) {
-      const shouldDelete = await confirm(
-        `${path} will be DELETED.
-      
-      Are you sure?
-      `,
-        {
-          kind: "warning",
-          title: "NON-REVERSIBLE ACTION",
-          okLabel: "DELETE",
-        }
-      );
-
-      if (shouldDelete) {
-        console.warn(":: deleting ::");
-        const rm = await remove(`${path}/node_modules`, { recursive: true });
-        console.log(rm);
-        return true;
-      }
+      console.warn(":: deleting ::");
+      await remove(`${path}/node_modules`, { recursive: true });
     }
 
-    return false;
+    return true;
   };
 }
 
 function TableRow(props: TRprops) {
   const [shouldDelete, setDelete] = createSignal(false);
 
-  const [data, { mutate }] = createResource(
+  const [data] = createResource(
     shouldDelete,
-    deleteNodeModules(props.directoryPrefix + props.directory)
+    deleteNodeModules(props.directoryPrefix + props.directory),
   );
+
+  async function confirmDelete() {
+    const shouldDelete = await confirm(
+      `${props.directoryPrefix + props.directory} will be DELETED.
+    
+    Are you sure?
+    `,
+      {
+        kind: "warning",
+        title: "NON-REVERSIBLE ACTION",
+        okLabel: "DELETE",
+      },
+    );
+
+    setDelete(shouldDelete);
+  }
+
   return (
     <Show when={!data()}>
       <tr
@@ -82,9 +83,8 @@ function TableRow(props: TRprops) {
             <li>
               <button
                 type="button"
-                onClick={() => {
-                  mutate(true);
-                  setDelete(true);
+                onClick={async () => {
+                  await confirmDelete();
                 }}
               >
                 <Trashbin />
@@ -98,8 +98,6 @@ function TableRow(props: TRprops) {
 }
 
 export default function ResultsTable(props: ListProps) {
-  const [selected, setSelected] = createSignal([]);
-
   return (
     <table class="w-full text-center">
       <thead class="sticky top-0 backdrop-blur-xl">
