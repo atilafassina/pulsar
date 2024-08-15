@@ -44,8 +44,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "pulsar",
-        "width": 800,
-        "height": 600
+        "minWidth": 1000,
+        "minHeight": 800
       }
     ]
   }
