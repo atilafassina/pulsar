@@ -55,6 +55,7 @@ pub fn get_size<'a>(
 
 pub fn get_dir_names(path: &Path) -> Vec<PathBuf> {
     let mut filenames = Vec::new();
+    let node_modules_regex = Regex::new(r"node_modules").unwrap();
 
     let walker = GlobWalkerBuilder::from_patterns(path, &["**/node_modules", "**/![.pnpm]/*"])
         .max_depth(6)
@@ -66,7 +67,6 @@ pub fn get_dir_names(path: &Path) -> Vec<PathBuf> {
 
     for file in walker {
         let path_string = file.path().display().to_string();
-        let node_modules_regex = Regex::new(r"node_modules").unwrap();
 
         let mut count = 0;
         let mut start = 0;
