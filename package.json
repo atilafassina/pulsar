@@ -32,8 +32,8 @@
     "internal-ip": "^7.0.0",
     "prettier": "^3.3.3",
     "typescript": "^5.5.4",
-    "vite": "^4.5.0",
-    "vite-plugin-solid": "^2.7.2"
+    "vite": "^5.4.2",
+    "vite-plugin-solid": "^2.10.2"
   },
   "prettier": {}
 }
