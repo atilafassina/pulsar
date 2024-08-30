@@ -28,36 +28,30 @@ async fn get_dir_data(pattern: &str) -> Result<Vec<FolderStat>, Error> {
 
 pub fn run() {
     #[cfg(debug_assertions)]
-    let mut builder = tauri::Builder::default()
-        .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_fs::init())
-        .plugin(tauri_plugin_dialog::init());
+    let devtools = tauri_plugin_devtools::init();
+    let builder = tauri::Builder::default().plugin(devtools);
 
     #[cfg(not(debug_assertions))]
-    let builder = tauri::Builder::default()
-        .plugin(tauri_plugin_fs::init())
-        .plugin(tauri_plugin_dialog::init());
+    let builder = tauri::Builder::default();
 
-    let invoke_handler = {
-        let tauri_specta_builder =
-            tauri_specta::ts::builder().commands(tauri_specta::collect_commands![get_dir_data]);
+    let specta_builder = tauri_specta::Builder::<tauri::Wry>::new()
+        .commands(tauri_specta::collect_commands![get_dir_data]);
 
-        #[cfg(debug_assertions)]
-        let tauri_specta_builder = tauri_specta_builder.path("../src/commands.ts");
-
-        tauri_specta_builder.build().unwrap()
-    };
-
-    #[cfg(debug_assertions)]
-    {
-        let devtools = tauri_plugin_devtools::init();
-        builder = builder.plugin(devtools);
-    }
+    #[cfg(all(debug_assertions, not(mobile)))]
+    specta_builder
+        .export(
+            specta_typescript::Typescript::default()
+                .formatter(specta_typescript::formatter::prettier),
+            "../src/commands.ts",
+        )
+        .expect("failed to export typescript bindings");
 
     builder
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_dialog::init())
-        .invoke_handler(invoke_handler)
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_fs::init())
+        .invoke_handler(specta_builder.invoke_handler())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
